@@ -2,11 +2,18 @@
 
 from starkware.cairo.common.cairo_builtins import HashBuiltin
 from starkware.starknet.common.syscalls import (get_caller_address)
+from starkware.starknet.common.syscalls import storage_read, storage_write
 
 # TODO
 # Create a storage named `dust` that map an `address` to an `amount` 
 # https://starknet.io/documentation/contracts/#contracts_storage
 # https://www.cairo-lang.org/docs/hello_starknet/intro.html
+
+
+# Define a storage variable.
+@storage_var
+func dust(address: felt) -> (address : felt):
+end
 
 # This code block define an `external` function
 # It can be called by other contracts (wallet or other)

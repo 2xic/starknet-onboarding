@@ -60,8 +60,18 @@ func batch_create_stars{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_
     # Write a stop condition
     # Insert the star at index 0 of the array
     # recursively call `batch_create_stars`
-    
-    return ()
+
+    if array_len == 0: 
+        return ()
+    end
+
+    insert_star(address, array[0]) 
+
+    return batch_create_stars(
+        address,
+        array_len - 1,
+        &array[1]
+    )
 end
 
 func insert_star{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(address: felt, new_star: Star):

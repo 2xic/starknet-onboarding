@@ -82,17 +82,53 @@ func insert_star{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_p
     star.write(address, current_slot, new_star)
     
     slot.write(address, current_slot + 1)
-    
     # TODO
     # If the new user slot is equal to 1, 10 or 100, increment the caller rank
     # You will be confronted to revoked referenced
-    # https://www.cairo-lang.org/docs/how_cairo_works/consts.html#revoked-references
+    # https://www.cairo-lang.org/docs/how_cairo_workcurrent_slots/consts.html#revoked-references
     # That's one of the most tricky feature of cairo. Treat yourself !
+
+
+    if current_slot == 1:
+        increase_rank(address)
+        tempvar syscall_ptr = syscall_ptr
+        tempvar pedersen_ptr = pedersen_ptr
+        tempvar range_check_ptr = range_check_ptr
+    else: 
+        tempvar syscall_ptr = syscall_ptr
+        tempvar pedersen_ptr = pedersen_ptr
+        tempvar range_check_ptr = range_check_ptr
+    end
+    # CAIRO DON't HAVE ELSE IF ?
+    if current_slot == 10:
+        increase_rank(address)
+        tempvar syscall_ptr = syscall_ptr
+        tempvar pedersen_ptr = pedersen_ptr
+        tempvar range_check_ptr = range_check_ptr
+    else: 
+        tempvar syscall_ptr = syscall_ptr
+        tempvar pedersen_ptr = pedersen_ptr
+        tempvar range_check_ptr = range_check_ptr
+    end
+
+    # CAIRO DON't HAVE ELSE IF ?
+    if current_slot == 100:
+        increase_rank(address)
+        tempvar syscall_ptr = syscall_ptr
+        tempvar pedersen_ptr = pedersen_ptr
+        tempvar range_check_ptr = range_check_ptr
+    else: 
+        tempvar syscall_ptr = syscall_ptr
+        tempvar pedersen_ptr = pedersen_ptr
+        tempvar range_check_ptr = range_check_ptr
+    end
+
     
     a_star_is_born.emit(address, current_slot, new_star)
     
     return ()
 end
+
 
 func increase_rank{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(address: felt):
     let (current_rank) = rank.read(address)
