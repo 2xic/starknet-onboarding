@@ -48,7 +48,18 @@ func constructor{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_p
     # Init the contract as an ERC721, symbol is `DUST`, name is `Dust Non Fungible Token` 
     # Init the contract as an ERC721 Enumerable 
     # Init the contract as Ownable 
-    return ()
+     # let (owner) = get_caller_address()
+    
+    ERC721_initializer(
+        'Dust Non Fungible Token',
+        'DUST'
+    )
+    ERC721_Enumerable_initializer()
+    Ownable_initializer(
+        owner
+    )
+    return (
+    )
 end
 
 #
@@ -59,12 +70,20 @@ end
 func name{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}() -> (name : felt):
     # TODO
     # Return the name of the contract
+    let (name) = ERC721_name()
+    return (
+        name
+    )
 end
 
 @view
 func symbol{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}() -> (symbol : felt):
     # TODO
     # Return the symbol of the contract
+    let ( symbol ) = ERC721_symbol()
+    return (
+        symbol
+    )
 end
 
 @view
@@ -73,6 +92,10 @@ func balanceOf{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr
 ):
     # TODO
     # Return the balance of an user
+    let (balance)  = ERC721_balanceOf(owner)
+    return (
+        balance
+    )
 end
 
 @view
@@ -81,6 +104,10 @@ func ownerOf{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
 ) -> (owner : felt):
     # TODO
     # Return the owner of a token
+    let (owner ) = ERC721_ownerOf(tokenId)
+    return (
+        owner
+    )
 end
 
 @view
@@ -89,6 +116,10 @@ func isApprovedForAll{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_ch
 ) -> (isApproved : felt):
     # TODO
     # Return the approval status for an owner and an operator
+    let (status) = ERC721_isApprovedForAll(owner, operator)
+    return (
+        status
+    )
 end
 
 #
@@ -101,6 +132,7 @@ func setApprovalForAll{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_c
 ):
     # TODO
     # Set the approval for all of approved for operator 
+    ERC721_setApprovalForAll(operator, approved)
     return ()
 end
 
@@ -108,8 +140,12 @@ end
 func safeTransferFrom{pedersen_ptr : HashBuiltin*, syscall_ptr : felt*, range_check_ptr}(
     from_ : felt, to : felt, tokenId : Uint256
 ):
+    alloc_locals
     # TODO
     # Do a safe transfer of token
+    let (local data) = alloc()
+    ERC721_Enumerable_safeTransferFrom(from_, to, tokenId, 0, data)
+    return ()
 end
 
 @external
@@ -117,11 +153,21 @@ func mint{
     pedersen_ptr : HashBuiltin*, syscall_ptr : felt*, range_check_ptr, bitwise_ptr : BitwiseBuiltin*
 }(dust : Dust) -> (token_id : Uint256):
     alloc_locals
-    
+    Ownable_only_owner()
     # TODO
     # Restrict this call to `only_owner`
     # Mint the token
     # Return it's ID
+    let (owner) = get_caller_address()
+    let (local token_id : Uint256) = ERC721_Enumerable_totalSupply()
+
+    ERC721_Enumerable_mint(
+        owner,
+        token_id    
+    )
+    return (
+        token_id
+    )
 end
 
 @external
@@ -129,6 +175,8 @@ func burn{pedersen_ptr : HashBuiltin*, syscall_ptr : felt*, range_check_ptr}(tok
     # TODO
     # Restrict this call to `only_owner`
     # Burn token
+    Ownable_only_owner()
+    ERC721_Enumerable_burn(token_id)
 
     return ()
 end
